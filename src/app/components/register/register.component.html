@@ -1,0 +1,100 @@
+<div class="register-container">
+  <div class="register-card">
+    <h4 class="login-title">Create an Account</h4>
+    <p class="login-subtitle">Please enter your details to register</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- First Name -->
+      <div class="input-group">
+        <label for="firstName" class="input-label">First Name:</label>
+        <input
+          type="text"
+          id="firstName"
+          formControlName="firstName"
+          class="input-field"
+          [ngClass]="{ 'is-invalid': submitted && f['firstName'].errors }"
+        />
+        <div *ngIf="submitted && f['firstName'].errors" class="invalid-feedback">
+          <div *ngIf="f['firstName'].errors['required']">First Name is required</div>
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div class="input-group">
+        <label for="lastName" class="input-label">Last Name:</label>
+        <input
+          type="text"
+          id="lastName"
+          formControlName="lastName"
+          class="input-field"
+          [ngClass]="{ 'is-invalid': submitted && f['lastName'].errors }"
+        />
+        <div *ngIf="submitted && f['lastName'].errors" class="invalid-feedback">
+          <div *ngIf="f['lastName'].errors['required']">Last Name is required</div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <label for="email" class="input-label">Email address:</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="input-field"
+          [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+        />
+        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+          <div *ngIf="f['email'].errors['required']">Email is required</div>
+          <div *ngIf="f['email'].errors['email']">Please enter a valid email</div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label for="password" class="input-label">Password:</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="input-field"
+          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+        />
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors['required']">Password is required</div>
+          <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
+        </div>
+      </div>
+
+      <!-- Role -->
+      <div class="input-group">
+        <label for="role" class="input-label">Role:</label>
+        <select
+          id="role"
+          formControlName="role"
+          class="input-field"
+          [ngClass]="{ 'is-invalid': submitted && f['role'].errors }"
+        >
+          <option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</option>
+        </select>
+        <div *ngIf="submitted && f['role'].errors" class="invalid-feedback">
+          <div *ngIf="f['role'].errors['required']">Role is required</div>
+        </div>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn-login" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+        Register
+      </button>
+
+      <!-- Login Link -->
+      <p class="register-link">
+        Already have an account? <a routerLink="/login">Login</a>
+      </p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+/* Global styles */
+body {
+    background: linear-gradient(135deg, #377dff, #1e40af);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  /* Register container */
+  .register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh; /* Fix for proper centering */
+  }
+  
+  /* Register card */
+  .register-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+  }
+  
+  .register-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .register-subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+  }
+  
+  /* Input groups */
+  .input-group {
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  .input-label {
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    transition: border 0.3s ease;
+  }
+  
+  .input-field:focus {
+    border-color: #377dff;
+    outline: none;
+  }
+  
+  /* Error feedback */
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 12px;
+    text-align: left;
+  }
+  
+  /* Submit button */
+  .btn-login {
+    width: 100%;
+    background: #377dff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-login:hover {
+    background: #1e40af;
+  }
+  
+  .btn-login:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Register link */
+  .register-link {
+    font-size: 14px;
+    margin-top: 15px;
+  }
+  
+  .register-link a {
+    color: #377dff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+  

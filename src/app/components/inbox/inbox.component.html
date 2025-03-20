@@ -1,0 +1,34 @@
+<div class="inbox-container">
+    <h2>Inbox</h2>
+    
+    <div class="inbox-content">
+      <div class="message-list">
+        <div *ngFor="let message of messages" 
+             class="message-item" 
+             [class.unread]="!message.read"
+             [class.selected]="selectedMessage === message"
+             (click)="selectMessage(message)">
+          <div class="sender">{{ message.sender }}</div>
+          <div class="subject">{{ message.subject }}</div>
+          <div class="date">{{ message.date }}</div>
+        </div>
+      </div>
+      
+      <div class="message-details" *ngIf="selectedMessage">
+        <div class="message-header">
+          <h3>{{ selectedMessage.subject }}</h3>
+          <div class="message-info">
+            <span class="sender">From: {{ selectedMessage.sender }}</span>
+            <span class="date">{{ selectedMessage.date }}</span>
+          </div>
+        </div>
+        <div class="message-body">
+          {{ selectedMessage.content }}
+        </div>
+      </div>
+      
+      <div class="no-message" *ngIf="!selectedMessage">
+        <p>Select a message to view its contents</p>
+      </div>
+    </div>
+  </div>

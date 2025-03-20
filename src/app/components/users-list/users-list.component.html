@@ -1,0 +1,101 @@
+<!-- HTML Component -->
+<div class="users-list-container">
+    <h1>Users List</h1>
+    
+    <div class="table-container">
+      <!-- Add this near the top of your template -->
+      <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+      <p-table [value]="users" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+              [tableStyle]="{'width': '100%'}" [loading]="loading"
+              currentPageReportTemplate="Showing {first}-{last} of {totalRecords}"
+              >
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="name-column">NAME</th>
+            <th class="email-column">Email address</th>
+            <th class="role-column">ROLE</th>
+            <th class="actions-column">ACTIONS</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td class="name-column">{{ user.firstName }} {{ user.lastName }}</td>
+            <td class="email-column">{{ user.email }}</td>
+            <td class="role-column">
+              <span class="role-badge" [ngClass]="getRoleClass(user.role)">{{ user.role }}</span>
+            </td>
+            <td class="actions-column">
+              <div class="action-buttons">
+                <button class="custom-button edit-button" (click)="editUser(user)">
+                  Edit
+                </button>
+                <button class="custom-button delete-button" (click)="confirmDeleteUser(user)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="pagination-info">
+            Showing 1-{{ users.length < 10 ? users.length : 10 }} of {{ users.length }}
+          </div>
+          <div class="pagination-controls">
+            <button class="pagination-button prev">
+              <i class="pi pi-chevron-left"></i>
+            </button>
+            <button class="pagination-button next">
+              <i class="pi pi-chevron-right"></i>
+            </button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">No users found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  
+    <!-- User Edit Dialog -->
+    <p-dialog [(visible)]="userDialog" [style]="{width: '450px'}" header="User Details" [modal]="true" styleClass="p-fluid">
+      <form [formGroup]="userForm">
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" pInputText id="firstName" formControlName="firstName" required autofocus />
+          <small class="p-error" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+            First name is required.
+          </small>
+        </div>
+  
+        <div class="field">
+          <label for="lastName">Last Name</label>
+          <input type="text" pInputText id="lastName" formControlName="lastName" required />
+          <small class="p-error" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+            Last name is required.
+          </small>
+        </div>
+  
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" pInputText id="email" formControlName="email" required />
+          <small class="p-error" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            Valid email is required.
+          </small>
+        </div>
+  
+        <div class="field">
+          <label for="role">Role</label>
+          <p-dropdown id="role" [options]="roles" formControlName="role" placeholder="Select a role"></p-dropdown>
+          <small class="p-error" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+            Role is required.
+          </small>
+        </div>
+      </form>
+  
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="dialog-button cancel" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="dialog-button save" (click)="saveUser()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>

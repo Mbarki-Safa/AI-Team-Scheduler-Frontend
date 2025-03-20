@@ -1,0 +1,137 @@
+<div class="calendar-container">
+  <div class="calendar-header">
+    <h2>Calendar</h2>
+    <div class="calendar-controls">
+      <div class="today-button" (click)="goToToday()">Today</div>
+      
+      <div class="month-selector">
+        <!-- Month View navigation -->
+        <button *ngIf="viewMode === 'month'" (click)="previousMonth()" class="nav-button">&lt;</button>
+        <h3 *ngIf="viewMode === 'month'">{{ monthNames[currentMonth] }} {{ currentYear }}</h3>
+        <button *ngIf="viewMode === 'month'" (click)="nextMonth()" class="nav-button">&gt;</button>
+        
+        <!-- Week View navigation -->
+        <button *ngIf="viewMode === 'week'" (click)="previousWeek()" class="nav-button">&lt;</button>
+        <h3 *ngIf="viewMode === 'week'">{{ formatWeekViewTitle() }}</h3>
+        <button *ngIf="viewMode === 'week'" (click)="nextWeek()" class="nav-button">&gt;</button>
+        
+        <!-- Day View navigation -->
+        <button *ngIf="viewMode === 'day'" (click)="previousDay()" class="nav-button">&lt;</button>
+        <h3 *ngIf="viewMode === 'day'">{{ formatDayViewTitle() }}</h3>
+        <button *ngIf="viewMode === 'day'" (click)="nextDay()" class="nav-button">&gt;</button>
+      </div>
+      
+      <div class="view-modes">
+        <button [class.active]="viewMode === 'day'" (click)="setViewMode('day')">Day</button>
+        <button [class.active]="viewMode === 'week'" (click)="setViewMode('week')">Week</button>
+        <button [class.active]="viewMode === 'month'" (click)="setViewMode('month')">Month</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Month View -->
+  <div *ngIf="viewMode === 'month'" class="calendar-grid">
+    <div class="days-header">
+      <div class="day-header" *ngFor="let day of daysOfWeek">{{ day }}</div>
+    </div>
+    
+    <div class="days-grid">
+      <div *ngFor="let day of calendarDays" 
+           class="day-cell" 
+           [class.inactive]="!day.isCurrentMonth"
+           [class.today]="day.day === today.getDate() && day.month === today.getMonth() && day.year === today.getFullYear()">
+        <div class="day-number">{{ day.day }}</div>
+        <div class="day-events">
+          <div *ngFor="let event of getEventsForDay(day.day, day.month, day.year)" 
+               class="event" 
+               [style.background-color]="event.color">
+            {{ event.title }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Week View -->
+  <div *ngIf="viewMode === 'week'" class="calendar-grid calendar-week-view">
+    <div class="days-header">
+      <div class="time-column-header"></div>
+      <div class="day-header week-day-header" *ngFor="let weekDay of weekDays">
+        <div>{{ daysOfWeek[weekDay.date.getDay()] }}</div>
+        <div class="week-date" [class.today-date]="weekDay.isToday">{{ weekDay.day }}</div>
+      </div>
+    </div>
+    
+    <div class="week-grid">
+      <div class="time-column">
+        <div class="time-slot" *ngFor="let hour of dayHours">
+          {{ hour }}
+        </div>
+      </div>
+      
+      <div class="week-days-columns">
+        <div class="week-day-column" *ngFor="let weekDay of weekDays">
+          <div class="time-slot" *ngFor="let hour of dayHours">
+            <!-- Time slot markers -->
+          </div>
+          
+          <!-- Overlay events at proper times -->
+          <div class="events-container">
+            <div *ngFor="let event of getEventsForDate(weekDay.date); let i = index" 
+                 class="event timed-event" 
+                 [style.background-color]="event.color"
+                 [style.top]="calculateEventStyle(event).top"
+                 [style.height]="calculateEventStyle(event).height"
+                 [style.width]="calculateEventWidth(getEventsForDate(weekDay.date), i)"
+                 [style.left]="calculateEventLeft(getEventsForDate(weekDay.date), i)">
+              <div class="event-title">{{ event.title }}</div>
+              <div class="event-time">{{ formatEventTime(event) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Day View -->
+  <!-- Day View with horizontal 5-minute slots -->
+<div *ngIf="viewMode === 'day'" class="calendar-grid calendar-day-view">
+  <div class="day-header single-day-header">
+    <h3>{{ formatDayViewTitle() }}</h3>
+  </div>
+  
+  <div class="day-grid-horizontal">
+    <!-- For each hour -->
+    <div *ngFor="let hourData of dayHoursWithSlots" class="hour-row">
+      <!-- Hour label -->
+      <div class="hour-label">{{ hourData.hour }}</div>
+      
+      <!-- Container for the 12 time slots and events -->
+      <div class="hour-slots-container">
+        <!-- 12 time slots per hour -->
+        <div class="time-slots-grid">
+          <div *ngFor="let timeSlot of hourData.slots" 
+               class="time-slot-cell"
+               [attr.data-time]="timeSlot.time">
+            <span class="time-slot-label">{{ timeSlot.label }}</span>
+          </div>
+        </div>
+        
+        <!-- Events overlay -->
+        <div class="events-overlay">
+          <ng-container *ngFor="let event of getEventsForDate(selectedDate)">
+            <div *ngIf="calculateEventGridPosition(event).hourRow === hourData.slots[0].time.split(':')[0]"
+                 class="event timed-event-horizontal" 
+                 [style.background-color]="event.color"
+                 [style.grid-column-start]="calculateEventGridPosition(event).slotStart + 1"
+                 [style.grid-column-end]="calculateEventGridPosition(event).slotStart + calculateEventGridPosition(event).slotSpan + 1">
+              <div class="event-title">{{ event.title }}</div>
+              <div class="event-time">{{ formatEventTime(event) }}</div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

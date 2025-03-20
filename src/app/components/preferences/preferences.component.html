@@ -1,0 +1,75 @@
+<div class="preferences-container">
+  <h2>Preferences</h2>
+  
+  <div class="preferences-content">
+  
+    <!-- New Working Schedule Section -->
+    <div class="preference-section">
+    
+      
+      <div class="preference-item">
+        <h4>Working Days</h4>
+        <div class="working-days-container">
+          <div class="day-checkbox" *ngFor="let day of daysOfWeek">
+            <label>
+              <!-- Fixed: Using the helper methods instead of direct property access -->
+              <input type="checkbox" [ngModel]="isWorkingDay(day)" (ngModelChange)="setWorkingDay(day, $event)">
+              {{ day | titlecase }}
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="preference-item">
+        <h4>Holidays</h4>
+        <div class="holidays-container">
+          <div class="add-holiday">
+            <input type="date" [(ngModel)]="newHoliday">
+            <button (click)="addHoliday()">Add Holiday</button>
+          </div>
+          <div class="holiday-list" *ngIf="preferences.holidays.length > 0">
+            <div class="holiday-item" *ngFor="let holiday of preferences.holidays">
+              <span>{{ holiday | date }}</span>
+              <button class="remove-btn" (click)="removeHoliday(holiday)">✕</button>
+            </div>
+          </div>
+          <div *ngIf="preferences.holidays.length === 0" class="empty-list">
+            No holidays added
+          </div>
+        </div>
+      </div>
+      
+      <div class="preference-item">
+        <h4>Working Hours</h4>
+        <div class="time-slots-container">
+          <div class="add-time-slot">
+            <div class="time-slot-form">
+              <select [(ngModel)]="newTimeSlot.dayOfWeek">
+                <option *ngFor="let day of daysOfWeek" [value]="day">{{ day | titlecase }}</option>
+              </select>
+              <input type="time" [(ngModel)]="newTimeSlot.startTime">
+              <span>to</span>
+              <input type="time" [(ngModel)]="newTimeSlot.endTime">
+              <button (click)="addTimeSlot()">Add Time Slot</button>
+            </div>
+          </div>
+          
+          <div class="time-slots-list" *ngIf="preferences.workingTimeSlots.length > 0">
+            <div class="time-slot-item" *ngFor="let slot of preferences.workingTimeSlots">
+              <span>{{ slot.dayOfWeek | titlecase }}: {{ slot.startTime }} to {{ slot.endTime }}</span>
+              <button class="remove-btn" (click)="removeTimeSlot(slot.id)">✕</button>
+            </div>
+          </div>
+          <div *ngIf="preferences.workingTimeSlots.length === 0" class="empty-list">
+            No working hours added
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="preference-actions">
+      <button class="save-button" (click)="savePreferences()">Save Preferences</button>
+    </div>
+  </div>
+</div>
+  

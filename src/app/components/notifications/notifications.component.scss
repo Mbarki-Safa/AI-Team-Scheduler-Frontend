@@ -1,0 +1,110 @@
+.notifications-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    h2 {
+      margin: 0;
+    }
+    
+    .read-all-button {
+      padding: 8px 15px;
+      background-color: #f5f5f5;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+  }
+  
+  .notifications-content {
+    background-color: white;
+    border-radius: 8px;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  
+  .no-notifications {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    &.unread {
+      background-color: #f0f8ff;
+    }
+    
+    &.info {
+      border-left: 4px solid #4285f4;
+    }
+    
+    &.warning {
+      border-left: 4px solid #fbbc05;
+    }
+    
+    &.error {
+      border-left: 4px solid #ea4335;
+    }
+    
+    &.success {
+      border-left: 4px solid #34a853;
+    }
+    
+    .notification-content {
+      flex-grow: 1;
+      
+      .notification-message {
+        margin-bottom: 5px;
+      }
+      
+      .notification-date {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+    
+    .notification-actions {
+      display: flex;
+      
+      .action-button {
+        padding: 5px 10px;
+        margin-left: 10px;
+        background-color: #f5f5f5;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        
+        &:hover {
+          background-color: #e0e0e0;
+        }
+        
+        &.delete {
+          color: #ea4335;
+          
+          &:hover {
+            background-color: #ffebee;
+          }
+        }
+      }
+    }
+  }

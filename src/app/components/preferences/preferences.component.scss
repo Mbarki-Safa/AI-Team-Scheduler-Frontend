@@ -1,0 +1,166 @@
+.preferences-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.preferences-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.preference-section {
+  margin-bottom: 30px;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  label {
+    font-weight: 500;
+  }
+
+  select, input[type="time"], input[type="date"] {
+    padding: 8px;
+    width: 200px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+}
+
+.preference-actions {
+  text-align: right;
+  margin-top: 30px;
+
+  .save-button {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #3367d6;
+    }
+  }
+}
+
+.working-days-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+.holidays-container {
+  .add-holiday {
+    display: flex;
+    gap: 10px;
+
+    button {
+      padding: 6px 12px;
+      background-color: #34a853;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #2c8c45;
+      }
+    }
+  }
+
+  .holiday-list {
+    margin-top: 10px;
+
+    .holiday-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+
+      .remove-btn {
+        background: #d32f2f;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        cursor: pointer;
+        border-radius: 4px;
+
+        &:hover {
+          background: #b71c1c;
+        }
+      }
+    }
+  }
+}
+
+.time-slots-container {
+  .time-slot-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    button {
+      padding: 6px 12px;
+      background-color: #fbbc05;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e5a800;
+      }
+    }
+  }
+
+  .time-slots-list {
+    margin-top: 10px;
+
+    .time-slot-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+
+      .remove-btn {
+        background: #d32f2f;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        cursor: pointer;
+        border-radius: 4px;
+
+        &:hover {
+          background: #b71c1c;
+        }
+      }
+    }
+  }
+}
