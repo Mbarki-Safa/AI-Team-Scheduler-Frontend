@@ -12,9 +12,11 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  private refreshTokenTimeout: any;
   
   constructor(private http: HttpClient) {
     this.loadUserFromStorage();
+    this.setupTokenRefresh();
   }
   
   register(registerRequest: RegisterRequest): Observable<AuthResponse> {
@@ -32,6 +34,7 @@ export class AuthService {
   }
     
   logout(): void {
+    this.stopRefreshTokenTimer();
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
@@ -49,6 +52,51 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
+
+  //refresh token methods 
+
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+    
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh-token`, { refreshToken })
+      .pipe(
+        tap(response => this.handleAuthResponse(response)),
+        catchError(error => {
+          this.logout();
+          return throwError(() => error);
+        })
+      );
+  }
+  
+  private startRefreshTokenTimer(): void {
+    const jwtToken = this.getToken();
+    if (!jwtToken) return;
+    
+    const jwtPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+    const expires = new Date(jwtPayload.exp * 1000);
+    
+    // Refresh 1 minute before token expires
+    const timeout = expires.getTime() - Date.now() - (60 * 1000);
+    
+    this.refreshTokenTimeout = setTimeout(() => {
+      this.refreshToken().subscribe();
+    }, timeout);
+  }
+  
+  private stopRefreshTokenTimer(): void {
+    if (this.refreshTokenTimeout) {
+      clearTimeout(this.refreshTokenTimeout);
+    }
+  }
+  
+  private setupTokenRefresh(): void {
+    if (this.isLoggedIn()) {
+      this.startRefreshTokenTimer();
+    }
+  }
   
   private handleAuthResponse(response: AuthResponse): void {
     if (response && response.accessToken) {
@@ -56,9 +104,10 @@ export class AuthService {
       localStorage.setItem('refresh_token', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
       this.currentUserSubject.next(response.user);
+      this.startRefreshTokenTimer();
     }
   }
-  
+
   private loadUserFromStorage(): void {
     const user = localStorage.getItem('user');
     if (user) {

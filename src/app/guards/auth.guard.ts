@@ -14,7 +14,7 @@ export class AuthGuard{
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
       return false;
-    }
+    } 
    
     // Check role if needed
     if (route.data['roles']) {

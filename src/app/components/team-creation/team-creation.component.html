@@ -1,0 +1,58 @@
+<div class="team-creation-container">
+    <h2>Create Team</h2>
+    
+    <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input matInput placeholder="Team Name" formControlName="teamName" required>
+      </mat-form-field>
+      
+      <mat-form-field>
+        <mat-label>Invite Team Members</mat-label>
+        <mat-select formControlName="invitedEmails" multiple>
+          <mat-option *ngFor="let user of availableUsers" [value]="user.email">
+            {{ user.name }} ({{ user.email }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-raised-button color="primary" type="submit" [disabled]="teamForm.invalid">
+        Create Team
+      </button>
+    </form>
+
+    <div class="team-management-section" *ngIf="managerTeams.length > 0">
+      <h3>Your Teams</h3>
+      
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let team of managerTeams">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ team.name }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ team.members.length }} members
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          
+          <mat-list>
+            <mat-list-item *ngFor="let member of team.members">
+              <div class="member-item">
+                <span>{{ member.firstName }} {{ member.lastName }} ({{ member.email }})</span>
+                <button mat-icon-button color="warn" (click)="removeTeamMember(team.id, member.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </mat-list-item>
+          </mat-list>
+          
+          <div *ngIf="team.members.length === 0" class="no-members-message">
+            No members in this team yet
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    
+    <div *ngIf="managerTeams.length === 0" class="no-teams-message">
+      You don't have any teams yet. Create your first team to get started!
+    </div>
+</div>

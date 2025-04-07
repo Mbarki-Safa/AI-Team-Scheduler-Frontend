@@ -29,7 +29,7 @@ export class AppComponent  implements OnInit  {
 
     // Function to check if the current page is Login or Register
     isAuthPage(): boolean {
-      return this.router.url === '/login' || this.router.url === '/register';
+      return this.router.url.startsWith('/login') || this.router.url.startsWith('/register');
     }
      // Function to handle logout
   logout() {

@@ -17,8 +17,16 @@ import { InboxComponent } from './components/inbox/inbox.component';
 import { PreferencesComponent } from './components/preferences/preferences.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 // PrimeNG Imports
+
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -31,6 +39,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
 import { RoleBasedRedirectComponent } from './components/role-based-redirect/role-based-redirect.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { TeamCreationComponent } from './components/team-creation/team-creation.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +53,7 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
     UsersListComponent,
     RoleBasedRedirectComponent,
     UnauthorizedComponent,
+    TeamCreationComponent,
         
     ],
   imports: [
@@ -64,7 +74,15 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
     ToastModule,
     ConfirmDialogModule,
     TooltipModule,
-    RippleModule
+    RippleModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    BrowserAnimationsModule, // Required for most Angular Material components
+    MatSnackBarModule, 
+    MatExpansionModule,
+    MatListModule,
+    MatIconModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorInterceptor, multi: true },

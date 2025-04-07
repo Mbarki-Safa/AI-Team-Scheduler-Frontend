@@ -93,38 +93,37 @@
     </div>
   </div>
   
-  <!-- Day View -->
   <!-- Day View with horizontal 5-minute slots -->
 <div *ngIf="viewMode === 'day'" class="calendar-grid calendar-day-view">
   <div class="day-header single-day-header">
     <h3>{{ formatDayViewTitle() }}</h3>
   </div>
   
-  <div class="day-grid-horizontal">
+  <div class="day-grid-vertical">
     <!-- For each hour -->
-    <div *ngFor="let hourData of dayHoursWithSlots" class="hour-row">
+    <div *ngFor="let hourData of dayHoursWithSlots" class="hour-row" [attr.data-hour]="hourData.hour">
       <!-- Hour label -->
       <div class="hour-label">{{ hourData.hour }}</div>
       
-      <!-- Container for the 12 time slots and events -->
+      <!-- Container for vertical time slots and events -->
       <div class="hour-slots-container">
-        <!-- 12 time slots per hour -->
-        <div class="time-slots-grid">
+        <!-- Vertical time slots grid -->
+        <div class="time-slots-grid-vertical">
           <div *ngFor="let timeSlot of hourData.slots" 
-               class="time-slot-cell"
-               [attr.data-time]="timeSlot.time">
-            <span class="time-slot-label">{{ timeSlot.label }}</span>
-          </div>
+          class="time-slot-cell-vertical"
+          [attr.data-time]="timeSlot.time">
+       <span class="time-slot-label">{{ timeSlot.label }}</span>
+     </div>
         </div>
         
         <!-- Events overlay -->
-        <div class="events-overlay">
+        <div class="events-overlay-vertical">
           <ng-container *ngFor="let event of getEventsForDate(selectedDate)">
-            <div *ngIf="calculateEventGridPosition(event).hourRow === hourData.slots[0].time.split(':')[0]"
-                 class="event timed-event-horizontal" 
+            <div *ngIf="calculateEventVerticalPosition(event).hourRow === hourData.slots[0].time.split(':')[0]"
+                 class="event timed-event-vertical" 
                  [style.background-color]="event.color"
-                 [style.grid-column-start]="calculateEventGridPosition(event).slotStart + 1"
-                 [style.grid-column-end]="calculateEventGridPosition(event).slotStart + calculateEventGridPosition(event).slotSpan + 1">
+                 [style.grid-row-start]="calculateEventVerticalPosition(event).slotStart + 1"
+                 [style.grid-row-end]="calculateEventVerticalPosition(event).slotStart + calculateEventVerticalPosition(event).slotSpan + 1">
               <div class="event-title">{{ event.title }}</div>
               <div class="event-time">{{ formatEventTime(event) }}</div>
             </div>

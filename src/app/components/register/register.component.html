@@ -1,7 +1,9 @@
+<!-- register.component.html -->
 <div class="register-container">
   <div class="register-card">
     <h4 class="login-title">Create an Account</h4>
-    <p class="login-subtitle">Please enter your details to register</p>
+    <p class="login-subtitle" *ngIf="!invitationToken">Please enter your details to register</p>
+    <p class="login-subtitle" *ngIf="invitationToken">Complete your registration</p>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <!-- First Name -->
@@ -43,6 +45,7 @@
           formControlName="email"
           class="input-field"
           [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+          [readonly]="invitationEmail !== null"
         />
         <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
           <div *ngIf="f['email'].errors['required']">Email is required</div>
@@ -66,8 +69,8 @@
         </div>
       </div>
 
-      <!-- Role -->
-      <div class="input-group">
+      <!-- Role - Only show if not using invitation -->
+      <div class="input-group" *ngIf="!invitationToken">
         <label for="role" class="input-label">Role:</label>
         <select
           id="role"

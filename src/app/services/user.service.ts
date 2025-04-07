@@ -28,4 +28,9 @@ export class UserService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
+  // In user.service.ts
+  getAvailableUsers(): Observable<{name: string, email: string}[]> {
+    return this.http.get<{name: string, email: string}[]>(`${environment.apiUrl}/users/available-emails`);
+  }
+
 }

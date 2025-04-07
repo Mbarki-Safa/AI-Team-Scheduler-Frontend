@@ -8,13 +8,13 @@ interface CalendarEvent {
   endTime?: string;   // Format: "HH:MM"
   color: string;
 }
+
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
-    
   today = new Date();
   currentMonth = this.today.getMonth();
   currentYear = this.today.getFullYear();
@@ -30,43 +30,35 @@ export class CalendarComponent implements OnInit {
   events: CalendarEvent[] = [
     { id: 1, title: 'Conference', date: '2024-10-03', startTime: '09:00', endTime: '12:00', color: '#b8c2ff' },
     { id: 2, title: 'Meeting', date: '2024-10-16', startTime: '14:30', endTime: '15:30', color: '#ffc2e0' },
-    { id: 3, title: 'Glastonbury Festival', date: '2024-10-20', startTime: '10:00', endTime: '18:00', color: '#ffe2c2' },
-    { id: 4, title: 'Glastonbury F', date: '2024-10-25', startTime: '13:00', endTime: '14:30', color: '#c2d8ff' }
+    { id: 3, title: 'Team Building', date: '2024-10-20', startTime: '10:00', endTime: '18:00', color: '#ffe2c2' },
+    { id: 4, title: 'Meeting With Client', date: '2024-10-25', startTime: '13:00', endTime: '14:30', color: '#c2d8ff' }
   ];
   
   // For week view
   weekDays: any[] = [];
   // For day view
   dayHours: string[] = [];
-  // 5 minute slot 
-  //dayHoursWithSlots: {hour: string, slots: string[]}[] = [];
+  // Time slots - now with 15-minute intervals instead of 5-minute
   dayHoursWithSlots: { hour: string; slots: { time: string; label: string }[] }[] = [];
-
- 
-
- 
   
   constructor() { 
     // Generate hours for day view
     for (let i = 0; i < 24; i++) {
       this.dayHours.push(i < 10 ? `0${i}:00` : `${i}:00`);
     }
-
-     // Generate hours for day view
-  for (let i = 0; i < 24; i++) {
-    this.dayHours.push(i < 10 ? `0${i}:00` : `${i}:00`);
   }
   
-  }
-  
-
   ngOnInit(): void {
     this.generateCalendarDays();
     this.generateWeekDays();
     this.generateHoursWithSlots();
-    
+
+    if (this.viewMode === 'day') {
+      setTimeout(() => this.scrollToCurrentTime(), 0);
+    }
   }
 
+  // 5 minutes slots 
   generateHoursWithSlots(): void {
     this.dayHoursWithSlots = [];
     
@@ -75,12 +67,13 @@ export class CalendarComponent implements OnInit {
       const hour = i < 10 ? `0${i}` : `${i}`;
       const slots = [];
       
-      // Generate 12 five-minute slots per hour with labels for each one
+      // Generate 12 five-minute slots per hour
       for (let minute = 0; minute < 60; minute += 5) {
         const minuteStr = minute < 10 ? `0${minute}` : `${minute}`;
         slots.push({
           time: `${hour}:${minuteStr}`,
-          label: `${hour}:${minuteStr}`  // Add full time label to every slot
+          // Use the full time format HH:MM instead of just minutes
+          label: `${hour}:${minuteStr}`
         });
       }
       
@@ -90,9 +83,7 @@ export class CalendarComponent implements OnInit {
       });
     }
   }
-  
 
-  
   generateCalendarDays(): void {
     this.calendarDays = [];
     
@@ -199,33 +190,33 @@ export class CalendarComponent implements OnInit {
     };
   }
   
-// Update the calculation for event positioning
-calculateEventGridPosition(event: CalendarEvent): any {
-  if (!event.startTime || !event.endTime) {
-    return { hourRow: 0, slotStart: 0, slotSpan: 1 };
+  // Updated to work with 15-minute intervals
+  calculateEventVerticalPosition(event: CalendarEvent): any {
+    if (!event.startTime || !event.endTime) {
+      return { hourRow: 0, slotStart: 0, slotSpan: 1 };
+    }
+    
+    const [startHour, startMinute] = event.startTime.split(':').map(Number);
+    const [endHour, endMinute] = event.endTime.split(':').map(Number);
+    
+    // Calculate which hour row this belongs to
+    const hourRow = startHour;
+    
+    // Calculate which slot it starts at (0-11 for 5-minute intervals)
+    const slotStart = Math.floor(startMinute / 5);
+    
+    // Calculate how many slots it spans
+    const startInMinutes = (startHour * 60) + startMinute;
+    const endInMinutes = (endHour * 60) + endMinute;
+    const durationMinutes = endInMinutes - startInMinutes;
+    const slotSpan = Math.ceil(durationMinutes / 5);
+    
+    return {
+      hourRow: String(hourRow).padStart(2, '0'),
+      slotStart,
+      slotSpan
+    };
   }
-  
-  const [startHour, startMinute] = event.startTime.split(':').map(Number);
-  const [endHour, endMinute] = event.endTime.split(':').map(Number);
-  
-  // Calculate which hour row this belongs to
-  const hourRow = startHour;
-  
-  // Calculate which slot it starts at (0-11)
-  const slotStart = Math.floor(startMinute / 5);
-  
-  // Calculate how many slots it spans
-  const startInMinutes = (startHour * 60) + startMinute;
-  const endInMinutes = (endHour * 60) + endMinute;
-  const durationMinutes = endInMinutes - startInMinutes;
-  const slotSpan = Math.ceil(durationMinutes / 5);
-  
-  return {
-    hourRow,
-    slotStart,
-    slotSpan
-  };
-}
   
   calculateEventWidth(events: CalendarEvent[], eventIndex: number): string {
     // This is a simple width calculation - more sophisticated overlap handling could be implemented
@@ -285,12 +276,20 @@ calculateEventGridPosition(event: CalendarEvent): any {
     this.currentYear = this.selectedDate.getFullYear();
     this.generateWeekDays();
   }
-  
+ 
   previousDay(): void {
     this.selectedDate.setDate(this.selectedDate.getDate() - 1);
     this.selectedDate = new Date(this.selectedDate);
     this.currentMonth = this.selectedDate.getMonth();
     this.currentYear = this.selectedDate.getFullYear();
+
+     // If date changed to today, scroll to current time
+  const today = new Date();
+  if (this.selectedDate.getDate() === today.getDate() && 
+      this.selectedDate.getMonth() === today.getMonth() && 
+      this.selectedDate.getFullYear() === today.getFullYear()) {
+    setTimeout(() => this.scrollToCurrentTime(), 0);
+  }
   }
   
   nextDay(): void {
@@ -298,6 +297,14 @@ calculateEventGridPosition(event: CalendarEvent): any {
     this.selectedDate = new Date(this.selectedDate);
     this.currentMonth = this.selectedDate.getMonth();
     this.currentYear = this.selectedDate.getFullYear();
+
+     // If date changed to today, scroll to current time
+  const today = new Date();
+  if (this.selectedDate.getDate() === today.getDate() && 
+      this.selectedDate.getMonth() === today.getMonth() && 
+      this.selectedDate.getFullYear() === today.getFullYear()) {
+    setTimeout(() => this.scrollToCurrentTime(), 0);
+  }
   }
   
   goToToday(): void {
@@ -306,6 +313,11 @@ calculateEventGridPosition(event: CalendarEvent): any {
     this.currentYear = this.selectedDate.getFullYear();
     this.generateCalendarDays();
     this.generateWeekDays();
+
+     // If in day view, scroll to current time
+  if (this.viewMode === 'day') {
+    setTimeout(() => this.scrollToCurrentTime(), 0);
+  }
   }
   
   setViewMode(mode: string): void {
@@ -313,6 +325,9 @@ calculateEventGridPosition(event: CalendarEvent): any {
     // When switching to a new view, we should recalculate relevant data
     if (mode === 'week') {
       this.generateWeekDays();
+    } else if (mode === 'day') {
+      // Scroll to current time when day view is activated
+      setTimeout(() => this.scrollToCurrentTime(), 0);
     }
   }
   
@@ -321,7 +336,7 @@ calculateEventGridPosition(event: CalendarEvent): any {
     
     const firstDay = this.weekDays[0].date;
     const lastDay = this.weekDays[6].date;
-    
+   
     const firstMonth = this.monthNames[firstDay.getMonth()];
     const lastMonth = this.monthNames[lastDay.getMonth()];
     
@@ -331,7 +346,7 @@ calculateEventGridPosition(event: CalendarEvent): any {
       return `${firstMonth} - ${lastMonth} ${firstDay.getFullYear()}`;
     }
   }
-  
+
   formatDayViewTitle(): string {
     return `${this.monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getDate()}, ${this.selectedDate.getFullYear()}`;
   }
@@ -341,6 +356,36 @@ calculateEventGridPosition(event: CalendarEvent): any {
     return `${event.startTime} - ${event.endTime}`;
   }
 
-  
+  //Scroll method to the current hour in day view 
 
+  scrollToCurrentTime(): void {
+    if (this.viewMode === 'day') {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      
+      // Get the container element 
+      setTimeout(() => {
+        const container = document.querySelector('.day-grid-vertical');
+        
+        if (container) {
+          // Find the actual time element that's closest to current time
+          const currentHourStr = hours < 10 ? `0${hours}:00` : `${hours}:00`;
+          const hourElement = document.querySelector(`[data-hour="${currentHourStr}"]`);
+          
+          if (hourElement) {
+            const hourTop = hourElement.getBoundingClientRect().top + container.scrollTop;
+            const minuteOffset = (minutes / 60) * hourElement.clientHeight;
+            
+            const viewportHeight = container.clientHeight / 2;
+            container.scrollTop = Math.max(0, hourTop + minuteOffset - viewportHeight);
+          } else {
+            const pixelsPerHour = 60; 
+            const scrollPosition = (hours * pixelsPerHour) + ((minutes / 60) * pixelsPerHour);
+            container.scrollTop = Math.max(0, scrollPosition - container.clientHeight / 2);
+          }
+        }
+      }, 100); 
+    }
+  }
 }

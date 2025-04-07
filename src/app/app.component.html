@@ -23,6 +23,10 @@
         <i class="material-icons">notifications</i>
         <span>Notifications</span>
       </a>
+      <a routerLink="/team" routerLinkActive="active" class="menu-item" *ngIf="user?.role === 'Manager'">
+        <i class="material-icons">group</i>
+        <span>Team</span>
+      </a>
     </ng-container>
 
 

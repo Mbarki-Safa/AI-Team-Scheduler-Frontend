@@ -18,6 +18,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   role: UserRole;
+  invitationToken?: string | null;
 }
 
 export interface LoginRequest {

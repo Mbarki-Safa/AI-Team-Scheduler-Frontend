@@ -11,25 +11,23 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleBasedRedirectGuard } from './guards/role-based-redirect.guard';
 import { RoleBasedRedirectComponent } from './components/role-based-redirect/role-based-redirect.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { TeamCreationComponent } from './components/team-creation/team-creation.component';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard] , data: { roles: ['User', 'Manager'] }},
-  { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard] , data: { roles: ['User', 'Manager'] } },
-  { path: 'preferences', component: PreferencesComponent, canActivate: [AuthGuard] , data: { roles: ['User', 'Manager'] } },
-  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] , data: { roles: ['User', 'Manager'] }},
-  { path: 'admin/users', component: UsersListComponent, canActivate: [AuthGuard] , data: { roles: ['Admin'] } },
-  {
-    path: '',
-    canActivate: [RoleBasedRedirectGuard],
-    component: RoleBasedRedirectComponent
-  },
-   // Catch-all for unauthorized access
-   { path: 'unauthorized', component: UnauthorizedComponent },
-   { path: '**', redirectTo: '' }
+  { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard], data: { roles: ['User', 'Manager'] }},
+  { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { roles: ['User', 'Manager'] }},
+  { path: 'preferences', component: PreferencesComponent, canActivate: [AuthGuard], data: { roles: ['User', 'Manager'] }},
+  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard], data: { roles: ['User', 'Manager'] }},
+  { path: 'team', component: TeamCreationComponent, canActivate: [AuthGuard], data: { roles: ['Manager'] }},
+  { path: 'admin/users', component: UsersListComponent, canActivate: [AuthGuard], data: { roles: ['Admin'] }},
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  // Only apply the redirect guard to the root path
+  { path: '', component: RoleBasedRedirectComponent, canActivate: [RoleBasedRedirectGuard] },
+  // Catch-all for any other routes
+  { path: '**', redirectTo: '' }
   
 ];
 
